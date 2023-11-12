@@ -1,1 +1,22 @@
-#myCanvas { border: 2px solid rgb(0, 0, 0); }
+body{
+    display: flex; 
+	justify-content: center; /* center horizontally */ 
+	align-items: center; /* center vertically */ 
+    height: 100vh;
+    background-color: black;
+}
+
+#wraper { 
+	display: flex; 
+	justify-content: center; /* center horizontally */ 
+	align-items: center; /* center vertically */ 
+    height:530px;
+    width:1060px;
+    background-color: black;
+    border: 2px solid rgb(255, 255, 255);
+} 
+#myCanvas 
+{   
+    border: 2px solid rgba(29,64,113,255);
+    background-color: black;
+}

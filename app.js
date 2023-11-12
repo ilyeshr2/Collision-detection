@@ -1,10 +1,16 @@
 const canvas = document.getElementById("myCanvas") 
 const ctx = canvas.getContext("2d") 
 
-function ellipse(x, y, r) {
+let colors=['#35d9c4', '#7b3dfe', '#b9b2ff']
+
+
+function ellipse(x, y, r, color) {
+    ctx.strokeStyle = color
+    ctx.fillStyle = color
     ctx.beginPath() 
     ctx.arc(x, y, r, 0, 2 * Math.PI) 
     ctx.stroke() 
+    ctx.fill()
 }
 
 function randomR(a, b) {
@@ -28,7 +34,7 @@ class Bubble {
     //ax hiya accélération f x
     //ay hiya accélération fy
     //r houwa radius
-    constructor(x, y, vx, vy, ax, ay, r) {
+    constructor(x, y, vx, vy, ax, ay, r, color) {
         this.x = x 
         this.y = y 
         this.vx = vx 
@@ -36,10 +42,11 @@ class Bubble {
         this.ax= ax 
         this.ay= ay 
         this.r = r 
+        this.color=color
     }
 
     show() {
-        ellipse(this.x, this.y, this.r) 
+        ellipse(this.x, this.y, this.r, this.color) 
     }
 
     move() {
@@ -82,14 +89,16 @@ let bubbles = []
 
 function generateBubbles(numBubbles) {
     for (let i = 0 ; i < numBubbles ; i++) {
-        let x=randomR(0, canvas.width)
-        let y=randomR(0, canvas.height)
+        let r=randomN(5,10)
+        let x=randomR(0+r, canvas.width-r)
+        let y=randomR(0+r, canvas.height-r)
         let vx=randomR(-0.5,0.5) //bedlah l (-0.1,0.1) for a slower animation
         let vy=randomR(-0.5,0.5) //bedlah l (-0.1,0.1) for a slower animation
         let ax=randomN(5,20)
         let ay=randomN(5,20)
-        let r=randomN(5,20)
-        let bubble = new Bubble(x, y, vx, vy,ax,ay, r) 
+        let color= colors[randomN(0,2)]
+        
+        let bubble = new Bubble(x, y, vx, vy,ax,ay, r, color) 
         bubbles.push(bubble) 
     }
 }
@@ -104,7 +113,7 @@ function draw() {
     requestAnimationFrame(draw) 
 }
 
-generateBubbles(100) 
+generateBubbles(300) 
 draw()
 
 
