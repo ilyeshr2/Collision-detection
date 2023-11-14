@@ -19,14 +19,6 @@ function ellipse(x, y, r, color) {
     ctx.fill();
 }
 
-function line(x) {
-    ctx.strokeStyle = colors;
-    ctx.beginPath();
-    ctx.moveTo(x, 0);
-    ctx.lineTo(x, 500);
-    ctx.stroke();
-}
-
 function randomR(a, b) {
     const randomDecimal = Math.random();
     const randomNumber = a + randomDecimal * (b - a);
@@ -38,8 +30,7 @@ function randomN(min, max) {
 }
 
 let dt = 1 / 120;
-let c = 0;
-let bubblesNumber = 2;
+let bubblesNumber = 5;
 
 class Bubble {
     constructor(x, y, vx, vy, ax, ay, r, color) {
@@ -56,23 +47,17 @@ class Bubble {
 
     show() {
         ellipse(this.x, this.y, this.r, this.color);
-        //line(this.x - this.r);
-        //line(this.x + this.r);
     }
 
     move() {
-        this.handleBoxCollision();
+        
         this.vx = this.vx + this.ax * dt;
         this.vy = this.vy + this.ay * dt;
         this.x = this.x + this.vx * dt;
         this.y = this.y + this.vy * dt;
         this.bubblesInterval = [this.x - this.r, this.x + this.r];
+        this.handleBoxCollision();
         this.handleParticlesCollision();
-        xCor.innerText = 'x: ' + Math.round(this.x) + '. ';
-        yCor.innerText = 'y: ' + Math.round(this.y);
-        vxCor.innerText = 'vx: ' + this.vx.toFixed(2) + '. ';
-        vyCor.innerText = 'vy: ' + this.vy.toFixed(2);
-        //axCor.innerText = 'Intervale de la bulle: ' + Math.round(this.x - this.r);
     }
 
     handleBoxCollision() {
@@ -84,7 +69,6 @@ class Bubble {
         }
     }
 
-
     handleParticlesCollision() {
         for (const otherBubble of bubbles) {
             if (otherBubble !== this) {
@@ -95,40 +79,39 @@ class Bubble {
 
                 // Check if the distance is less than the sum of their radii
                 if (distance < this.r + otherBubble.r) {
-                    console.log(`Collision between Bubble ${this.x} and Bubble ${otherBubble.x}`);
-
-                    // Conservation of Momentum and Kinetic Energy
-                    const totalMass = this.r + otherBubble.r;
-                    const collisionNormalX = distanceX / distance;
-                    const collisionNormalY = distanceY / distance;
-
-                    // Relative velocity
-                    const relativeVelocityX = this.vx - otherBubble.vx;
-                    const relativeVelocityY = this.vy - otherBubble.vy;
-
-                    // Calculate the impact parameter
-                    const impactParameter = collisionNormalX * relativeVelocityX + collisionNormalY * relativeVelocityY;
-
-                    // Calculate the impulse
-                    const impulse = (2 * impactParameter) / totalMass;
-
-                    // Update velocities using conservation of momentum
-                    this.vx -= impulse * otherBubble.r;
-                    this.vy -= impulse * otherBubble.r;
-                    otherBubble.vx += impulse * this.r;
-                    otherBubble.vy += impulse * this.r;
-
-                    /* 
-                     Update positions if needed:
-                     this.x += this.vx * dt;
-                     this.y += this.vy * dt;
-                     otherBubble.x += otherBubble.vx * dt;
-                     otherBubble.y += otherBubble.vy * dt;
-                    */
-
-                    b1.innerText = this.x.toFixed(4);
-                    b2.innerText = otherBubble.x.toFixed(4);
+                    // Calculate the overlap distance
+                    const overlap = (this.r + otherBubble.r) - distance;
+                
+                    // Calculate the direction from this bubble to the other bubble
+                    const normalX = distanceX / distance;
+                    const normalY = distanceY / distance;
+                
+                    // Move the bubbles apart
+                    const moveScale = 0.5;
+                    this.x -= overlap * normalX * moveScale;
+                    this.y -= overlap * normalY * moveScale;
+                    otherBubble.x += overlap * normalX * moveScale;
+                    otherBubble.y += overlap * normalY * moveScale;
+                
+                    // Reflect velocities
+                    const relativeVelocityX = otherBubble.vx - this.vx;
+                    const relativeVelocityY = otherBubble.vy - this.vy;
+                    const dotProduct = (relativeVelocityX * normalX) + (relativeVelocityY * normalY);
+                
+                    this.vx += 2 * dotProduct * normalX;
+                    this.vy += 2 * dotProduct * normalY;
+                    otherBubble.vx -= 2 * dotProduct * normalX;
+                    otherBubble.vy -= 2 * dotProduct * normalY;
+                
+                    // Apply damping factor to reduce speed over time
+                    const dampingFactor = 0.98; // Adjust this value as needed
+                    this.vx *= dampingFactor;
+                    this.vy *= dampingFactor;
+                    otherBubble.vx *= dampingFactor;
+                    otherBubble.vy *= dampingFactor;
                 }
+                
+                
             }
         }
     }
@@ -136,8 +119,7 @@ class Bubble {
 
 
 let bubbles = [];
-let bubblesAtX = [];
-let activeInterval = [];
+
 
 function generateBubbles(numBubbles) {
     for (let i = 0; i < numBubbles; i++) {
