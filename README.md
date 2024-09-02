@@ -3,7 +3,11 @@
 This project creates a dynamic bubble animation using HTML5 Canvas and JavaScript. It generates bubbles of random sizes and colors that move within a confined space, bouncing off the edges of the canvas.
 
 
+![screen-capture8-ezgif com-crop](https://github.com/user-attachments/assets/d1ff5a8f-f2a8-45ea-8850-bfdb3edf7bba)
+
+
 ![CPT2409021518-1064x534](https://github.com/user-attachments/assets/a2aeb00d-5840-4c7e-a8f0-803fe6993467)
+
 
 ## Features
 
